@@ -67,7 +67,7 @@ TotalTransaction	ua_os_major	browser_major
 	-- > 870
 -----------------------
 8) How many transactions were done using a Desktop Device? 
-	select COUNT(disti]nct trans_id) from userclickstreams.clickstream where LOWER(ua_devicetype) = "desktop"; 
+	select COUNT(distinct trans_id) from userclickstreams.clickstream where LOWER(ua_devicetype) = "desktop"; 
 	-- > 925
 -----------------------
 9) How many unique visitors had transactions per day per major browser? For example, for "Chrome 28.7”, the major browser would be "Chrome”.

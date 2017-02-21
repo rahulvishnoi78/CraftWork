@@ -11,7 +11,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS userclickstreams.dim_browser (browser_id INT
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 TBLPROPERTIES ("skip.header.line.count"="1");
 -- Load browser table with S3 location as overwrite.
-LOAD DATA INPATH '${INPUT}metadata/browser/' OVERWRITE INTO TABLE userclickstreams.dim_browser;
+LOAD DATA INPATH '${INPUT}data/dimension/browser/' OVERWRITE INTO TABLE userclickstreams.dim_browser;
 
 -- Creating operating system dim table
 -- Ignoring first column as column title and expected is SCD1.
@@ -19,7 +19,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS userclickstreams.dim_operatingsystem (operat
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 TBLPROPERTIES ("skip.header.line.count"="1");
 -- Load operating system table from S3 location as Overwrite data to existing
-LOAD DATA INPATH '${INPUT}metadata/operating_system/' OVERWRITE INTO TABLE userclickstreams.dim_operatingsystem ;
+LOAD DATA INPATH '${INPUT}data/dimension/operating_system/' OVERWRITE INTO TABLE userclickstreams.dim_operatingsystem ;
 
 -- Creating Click Stream Fact as staging External table Table
 -- Ignoring first column as column title 
@@ -33,7 +33,7 @@ WITH SERDEPROPERTIES (
 "skip.header.line.count" = "1"
 );
 -- Append Data from S3 location into every schedule run
-LOAD DATA INPATH '${INPUT}data/raw/' OVERWRITE INTO TABLE userclickstreams.clickstream_staging; 
+LOAD DATA INPATH '${INPUT}data/fact/clickstream/raw/' OVERWRITE INTO TABLE userclickstreams.clickstream_staging; 
 
 -- Creating Click Stream Fact Table, it will be used in All Analytical queries.
 -- Its partitioned by hit_timestamp datetime and output is stored as Parquet into S3 location.
@@ -41,7 +41,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS userclickstreams.clickstream (trans_id BIGIN
 ua_devicename STRING, ua_devicetype STRING, ua_os_version  STRING, ua_os_major  STRING)
 PARTITIONED BY (dt string)
 STORED AS PARQUET 
-LOCATION '${OUTPUT}data/cooked2/';
+LOCATION '${OUTPUT}data/fact/clickstream/cooked/';
 
 --- Following are few key points 
 -- 1. Only Append records
